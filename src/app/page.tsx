@@ -71,9 +71,15 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="mx-auto max-w-6xl px-6 py-10">
-        <ArticleCard article={hero} variant="feature" />
-      </section>
+      {hero ? (
+        <section className="mx-auto max-w-6xl px-6 py-10">
+          <ArticleCard article={hero} variant="feature" />
+        </section>
+      ) : (
+        <section className="mx-auto max-w-6xl px-6 py-16 text-center text-muted">
+          No stories published yet — check back soon.
+        </section>
+      )}
 
       <section className="border-y border-border">
         <div className="mx-auto grid max-w-6xl grid-cols-2 sm:grid-cols-4">
