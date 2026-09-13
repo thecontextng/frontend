@@ -24,8 +24,8 @@ export default function FaqPage() {
 
       <h2>How do you fund your reporting?</h2>
       <p>
-        Our work is supported by advertising and select partnerships. Editorial decisions are
-        made independently of any advertiser or partner.
+        thecontext is an independent newsroom. Editorial decisions are made independently of any
+        funding source, advertiser, or partner.
       </p>
 
       <h2>Can I republish or quote your articles?</h2>

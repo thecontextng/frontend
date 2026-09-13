@@ -13,8 +13,8 @@ export default function CommentPolicyPage() {
       description="Guidelines for participating in discussion on thecontext."
     >
       <p>
-        We welcome thoughtful discussion on our stories. To keep comment sections useful and
-        respectful, we ask everyone to follow these guidelines.
+        thecontext does not currently have a public comment section on articles. If commenting
+        is enabled in the future, the following guidelines will apply.
       </p>
 
       <h2>Be respectful</h2>

@@ -55,7 +55,7 @@ export function TagInput({
   return (
     <div
       onClick={() => inputRef.current?.focus()}
-      className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-background px-3 py-2 focus-within:border-accent"
+      className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-background px-3 py-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/40"
     >
       {value.map((tag) => (
         <span

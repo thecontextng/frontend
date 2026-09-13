@@ -50,7 +50,8 @@ export async function SiteFooter() {
         <FooterColumn title="Contact" links={CONTACT_LINKS} />
       </div>
       <div className="border-t border-white/15 px-6 py-5 text-center text-xs text-accent-foreground/60">
-        &copy; {new Date().getFullYear()} thecontext. All rights reserved.
+        &copy; {new Date().getFullYear()} thecontext, published by Context Media Nigeria &middot;
+        Queen Palm Street, Karu Federal Housing, Abuja, Nigeria. All rights reserved.
       </div>
     </footer>
   );

@@ -8,6 +8,7 @@ import { useListCategoriesQuery } from "@/store/api-endpoints";
 export function SearchTrigger() {
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { data: categories = [] } = useListCategoriesQuery();
 
@@ -18,7 +19,28 @@ export function SearchTrigger() {
     inputRef.current?.focus();
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button, input, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
 
@@ -58,7 +80,13 @@ export function SearchTrigger() {
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/40"
           />
-          <div className="absolute right-0 top-0 flex h-full w-full max-w-sm flex-col bg-card shadow-xl sm:max-w-md">
+          <div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search"
+            className="absolute right-0 top-0 flex h-full w-full max-w-sm flex-col bg-card shadow-xl sm:max-w-md"
+          >
             <div className="flex items-center justify-between border-b border-border px-6 py-5">
               <span className="text-lg font-bold text-foreground">Search</span>
               <button
@@ -74,7 +102,7 @@ export function SearchTrigger() {
             </div>
 
             <form onSubmit={handleSubmit} className="border-b border-border px-6 py-5">
-              <div className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 focus-within:border-accent">
+              <div className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/40">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none stroke-muted" strokeWidth={2}>
                   <circle cx="11" cy="11" r="7" />
                   <path d="m20 20-3.5-3.5" strokeLinecap="round" />
@@ -83,6 +111,7 @@ export function SearchTrigger() {
                   ref={inputRef}
                   type="search"
                   name="q"
+                  aria-label="Search thecontext"
                   placeholder="Search thecontext"
                   className="w-full bg-transparent text-sm text-foreground placeholder:text-muted focus:outline-none"
                 />

@@ -24,7 +24,7 @@ export default async function NewsPage({ searchParams }: PageProps<"/news">) {
         </p>
 
         <form action="/news" method="GET" className="mt-6 max-w-md">
-          <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 focus-within:border-accent">
+          <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/40">
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none stroke-muted" strokeWidth={2}>
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" strokeLinecap="round" />

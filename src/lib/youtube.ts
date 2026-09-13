@@ -23,7 +23,10 @@ export function getYouTubeThumbnail(url: string): string | undefined {
   return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : undefined;
 }
 
+// youtube-nocookie.com is YouTube's privacy-enhanced embed domain — it avoids
+// setting third-party cookies until the viewer actually interacts with the
+// player, unlike the default youtube.com/embed domain.
 export function getYouTubeEmbedUrl(url: string): string | undefined {
   const id = getYouTubeId(url);
-  return id ? `https://www.youtube.com/embed/${id}` : undefined;
+  return id ? `https://www.youtube-nocookie.com/embed/${id}` : undefined;
 }

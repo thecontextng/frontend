@@ -149,6 +149,16 @@ const injectedRtkApi = api.injectEndpoints({
       }),
       invalidatesTags: ["CATEGORIES"],
     }),
+    createSubscriber: build.mutation<
+      CreateSubscriberApiResponse,
+      CreateSubscriberApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/subscribers`,
+        method: "POST",
+        body: queryArg.createSubscriberInput,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -236,6 +246,11 @@ export type UpdateCategoryApiArg = {
 export type DeleteCategoryApiResponse = unknown;
 export type DeleteCategoryApiArg = {
   id: string;
+};
+export type CreateSubscriberApiResponse =
+  /** status 201 Subscribed */ SubscribeResponse;
+export type CreateSubscriberApiArg = {
+  createSubscriberInput: CreateSubscriberInput;
 };
 export type User = {
   id: string;
@@ -380,6 +395,12 @@ export type UpdateCategoryInput = {
   name?: string;
   slug?: string;
 };
+export type SubscribeResponse = {
+  status: string;
+};
+export type CreateSubscriberInput = {
+  email: string;
+};
 export const {
   useLoginMutation,
   useGetCurrentUserQuery,
@@ -399,4 +420,5 @@ export const {
   useGetArticleBySlugQuery,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useCreateSubscriberMutation,
 } = injectedRtkApi;

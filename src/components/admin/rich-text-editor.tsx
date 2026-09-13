@@ -169,7 +169,7 @@ export function RichTextEditor({
   }, [value, htmlMode, editor]);
 
   return (
-    <div className="overflow-hidden rounded-md border border-border bg-background">
+    <div className="overflow-hidden rounded-md border border-border bg-background focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/40">
       <Toolbar editor={editor} htmlMode={htmlMode} onToggleHtmlMode={() => setHtmlMode((prev) => !prev)} />
 
       {htmlMode ? (

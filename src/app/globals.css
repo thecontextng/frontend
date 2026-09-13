@@ -35,7 +35,7 @@
     --card: #14141c;
     --border: #23242b;
     --accent: #4da6ff;
-    --accent-foreground: #ffffff;
+    --accent-foreground: #0c0c10;
     color-scheme: dark;
   }
 }
@@ -47,7 +47,7 @@
   --card: #14141c;
   --border: #23242b;
   --accent: #4da6ff;
-  --accent-foreground: #ffffff;
+  --accent-foreground: #0c0c10;
   color-scheme: dark;
 }
 

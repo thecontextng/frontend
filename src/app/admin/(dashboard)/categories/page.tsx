@@ -11,7 +11,7 @@ import {
 } from "@/store/api-endpoints";
 
 const INPUT_CLASS =
-  "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none";
+  "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40";
 
 function EditableRow({
   category,
