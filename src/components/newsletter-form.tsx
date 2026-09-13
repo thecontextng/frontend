@@ -24,7 +24,7 @@ export function NewsletterForm() {
   if (status === "submitted") {
     return (
       <p className="text-base font-semibold text-accent-foreground">
-        You&apos;re on the list — we&apos;ll email you when we publish new stories.
+You&apos;re on the list. We&apos;ve saved your email and will be in touch.
       </p>
     );
   }
