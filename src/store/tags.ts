@@ -1,0 +1,7 @@
+export const TAGS = {
+  ARTICLES: "ARTICLES",
+  ARTICLE_STATS: "ARTICLE_STATS",
+  CATEGORIES: "CATEGORIES",
+  USERS: "USERS",
+  AUTH: "AUTH",
+} as const;

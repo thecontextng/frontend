@@ -1,0 +1,472 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "thecontext API",
+    "version": "1.0.0",
+    "description": "News platform backend — auth, users, categories, and articles."
+  },
+  "servers": [{ "url": "http://localhost:4000" }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": { "error": { "type": "string" } },
+        "required": ["error"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "email": { "type": "string", "format": "email" },
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "editor", "author"] },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "email", "name", "role", "created_at", "updated_at"]
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" }
+        },
+        "required": ["id", "name", "slug"]
+      },
+      "MediaItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "type": { "type": "string", "enum": ["image", "video"] },
+          "url": { "type": "string" },
+          "caption": { "type": "string", "nullable": true },
+          "position": { "type": "integer" }
+        },
+        "required": ["id", "type", "url", "position"]
+      },
+      "MediaInput": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["image", "video"] },
+          "url": { "type": "string" },
+          "caption": { "type": "string" }
+        },
+        "required": ["type", "url"]
+      },
+      "ArticleListItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "excerpt": { "type": "string", "nullable": true },
+          "featured_image_url": { "type": "string", "nullable": true },
+          "status": { "type": "string", "enum": ["draft", "published", "archived"] },
+          "author_id": { "type": "string", "format": "uuid" },
+          "published_at": { "type": "string", "format": "date-time", "nullable": true },
+          "author_name": { "type": "string" },
+          "category_name": { "type": "string", "nullable": true },
+          "category_slug": { "type": "string", "nullable": true },
+          "video_url": { "type": "string", "nullable": true }
+        },
+        "required": ["id", "title", "slug", "status", "author_id", "author_name"]
+      },
+      "ArticleDetail": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "excerpt": { "type": "string", "nullable": true },
+          "content": { "type": "string" },
+          "featured_image_url": { "type": "string", "nullable": true },
+          "seo_title": { "type": "string", "nullable": true },
+          "seo_description": { "type": "string", "nullable": true },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["draft", "published", "archived"] },
+          "published_at": { "type": "string", "format": "date-time", "nullable": true },
+          "author_id": { "type": "string", "format": "uuid" },
+          "category_id": { "type": "string", "format": "uuid", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "author_name": { "type": "string" },
+          "category_name": { "type": "string", "nullable": true },
+          "category_slug": { "type": "string", "nullable": true },
+          "media": { "type": "array", "items": { "$ref": "#/components/schemas/MediaItem" } }
+        },
+        "required": ["id", "title", "slug", "content", "tags", "author_name", "media"]
+      },
+      "CreateArticleInput": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "excerpt": { "type": "string" },
+          "content": { "type": "string" },
+          "category_id": { "type": "string", "format": "uuid" },
+          "featured_image_url": { "type": "string" },
+          "seo_title": { "type": "string" },
+          "seo_description": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["draft", "published", "archived"] },
+          "published_at": { "type": "string", "format": "date-time" },
+          "author_id": { "type": "string", "format": "uuid" },
+          "media": { "type": "array", "items": { "$ref": "#/components/schemas/MediaInput" } }
+        },
+        "required": ["title", "content"]
+      },
+      "UpdateArticleInput": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "excerpt": { "type": "string" },
+          "content": { "type": "string" },
+          "category_id": { "type": "string", "format": "uuid" },
+          "featured_image_url": { "type": "string" },
+          "seo_title": { "type": "string" },
+          "seo_description": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["draft", "published", "archived"] },
+          "published_at": { "type": "string", "format": "date-time" },
+          "author_id": { "type": "string", "format": "uuid" },
+          "media": { "type": "array", "items": { "$ref": "#/components/schemas/MediaInput" } }
+        }
+      },
+      "ArticleStats": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "byStatus": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string", "enum": ["draft", "published", "archived"] },
+                "count": { "type": "integer" }
+              },
+              "required": ["status", "count"]
+            }
+          },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "slug": { "type": "string" },
+                "count": { "type": "integer" }
+              },
+              "required": ["name", "slug", "count"]
+            }
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "month": { "type": "string" },
+                "count": { "type": "integer" }
+              },
+              "required": ["month", "count"]
+            }
+          },
+          "topAuthors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "count": { "type": "integer" }
+              },
+              "required": ["name", "count"]
+            }
+          },
+          "mediaMix": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["image", "video"] },
+                "count": { "type": "integer" }
+              },
+              "required": ["type", "count"]
+            }
+          }
+        },
+        "required": ["total", "byStatus", "byCategory", "byMonth", "topAuthors", "mediaMix"]
+      },
+      "LoginInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/User" }
+        },
+        "required": ["token", "user"]
+      },
+      "CreateUserInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "editor", "author"] }
+        },
+        "required": ["email", "password", "name"]
+      },
+      "UpdateUserInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "editor", "author"] }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginInput" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginResponse" } } }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "getCurrentUser",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "The signed-in user",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "operationId": "listCategories",
+        "responses": {
+          "200": {
+            "description": "All categories",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Category" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "listUsers",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "All users",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createUser",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateUserInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "Created user",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "getUser",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "A user",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          },
+          "404": {
+            "description": "Not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateUser",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserInput" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated user",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteUser",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/articles": {
+      "get": {
+        "operationId": "listArticles",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "offset", "in": "query", "schema": { "type": "integer" } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "mine", "in": "query", "schema": { "type": "boolean" } },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "One of draft/published/archived, or 'all' (managers only)",
+            "schema": { "type": "string" }
+          },
+          { "name": "q", "in": "query", "description": "Free-text search across title, excerpt, and tags", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of articles",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ArticleListItem" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createArticle",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateArticleInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "Created article",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArticleDetail" } } }
+          }
+        }
+      }
+    },
+    "/articles/stats": {
+      "get": {
+        "operationId": "getArticleStats",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Editorial stats",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArticleStats" } } }
+          }
+        }
+      }
+    },
+    "/articles/id/{id}": {
+      "get": {
+        "operationId": "getArticleById",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Article, regardless of status",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArticleDetail" } } }
+          },
+          "404": {
+            "description": "Not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/articles/{id}": {
+      "patch": {
+        "operationId": "updateArticle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateArticleInput" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated article",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArticleDetail" } } }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteArticle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/articles/{slug}": {
+      "get": {
+        "operationId": "getArticleBySlug",
+        "parameters": [{ "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "A published article",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArticleDetail" } } }
+          },
+          "404": {
+            "description": "Not found",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    }
+  }
+}
