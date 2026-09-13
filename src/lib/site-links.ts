@@ -12,6 +12,7 @@ export const SUPPORT_LINKS: SiteLink[] = [
 ];
 
 export const CONTACT_LINKS: SiteLink[] = [
+  { name: "About", href: "/about" },
   { name: "Talk to Us", href: "/contact" },
   { name: "Careers", href: "/careers" },
 ];
