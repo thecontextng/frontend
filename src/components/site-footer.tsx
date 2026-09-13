@@ -37,13 +37,15 @@ export async function SiteFooter() {
           <SocialIcons className="mt-5" tone="inverted" />
         </div>
 
-        <FooterColumn
-          title="Sections"
-          links={categories.map((category) => ({
-            name: category.name,
-            href: `/category/${category.slug}`,
-          }))}
-        />
+        {categories.length > 0 ? (
+          <FooterColumn
+            title="Sections"
+            links={categories.map((category) => ({
+              name: category.name,
+              href: `/category/${category.slug}`,
+            }))}
+          />
+        ) : null}
         <FooterColumn title="Support" links={SUPPORT_LINKS} />
         <FooterColumn title="Contact" links={CONTACT_LINKS} />
       </div>

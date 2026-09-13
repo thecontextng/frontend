@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/articles", label: "Articles" },
   { href: "/admin/articles/new", label: "New Article" },
+  { href: "/admin/categories", label: "Categories" },
 ];
 
 const NAV_CLASS =

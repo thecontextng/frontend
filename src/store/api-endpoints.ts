@@ -22,6 +22,17 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/categories` }),
       providesTags: ["CATEGORIES"],
     }),
+    createCategory: build.mutation<
+      CreateCategoryApiResponse,
+      CreateCategoryApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories`,
+        method: "POST",
+        body: queryArg.createCategoryInput,
+      }),
+      invalidatesTags: ["CATEGORIES"],
+    }),
     listUsers: build.query<ListUsersApiResponse, ListUsersApiArg>({
       query: () => ({ url: `/users` }),
       providesTags: ["USERS"],
@@ -117,6 +128,27 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/articles/${queryArg.slug}` }),
       providesTags: ["ARTICLES"],
     }),
+    updateCategory: build.mutation<
+      UpdateCategoryApiResponse,
+      UpdateCategoryApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories/${queryArg.id}`,
+        method: "PATCH",
+        body: queryArg.updateCategoryInput,
+      }),
+      invalidatesTags: ["CATEGORIES"],
+    }),
+    deleteCategory: build.mutation<
+      DeleteCategoryApiResponse,
+      DeleteCategoryApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories/${queryArg.id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["CATEGORIES"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -131,6 +163,11 @@ export type GetCurrentUserApiArg = void;
 export type ListCategoriesApiResponse =
   /** status 200 All categories */ Category[];
 export type ListCategoriesApiArg = void;
+export type CreateCategoryApiResponse =
+  /** status 201 Created category */ Category;
+export type CreateCategoryApiArg = {
+  createCategoryInput: CreateCategoryInput;
+};
 export type ListUsersApiResponse = /** status 200 All users */ User[];
 export type ListUsersApiArg = void;
 export type CreateUserApiResponse = /** status 201 Created user */ User;
@@ -190,6 +227,16 @@ export type GetArticleBySlugApiResponse =
 export type GetArticleBySlugApiArg = {
   slug: string;
 };
+export type UpdateCategoryApiResponse =
+  /** status 200 Updated category */ Category;
+export type UpdateCategoryApiArg = {
+  id: string;
+  updateCategoryInput: UpdateCategoryInput;
+};
+export type DeleteCategoryApiResponse = unknown;
+export type DeleteCategoryApiArg = {
+  id: string;
+};
 export type User = {
   id: string;
   email: string;
@@ -213,6 +260,10 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+};
+export type CreateCategoryInput = {
+  name: string;
+  slug?: string;
 };
 export type CreateUserInput = {
   email: string;
@@ -325,10 +376,15 @@ export type UpdateArticleInput = {
   author_id?: string;
   media?: MediaInput[];
 };
+export type UpdateCategoryInput = {
+  name?: string;
+  slug?: string;
+};
 export const {
   useLoginMutation,
   useGetCurrentUserQuery,
   useListCategoriesQuery,
+  useCreateCategoryMutation,
   useListUsersQuery,
   useCreateUserMutation,
   useGetUserQuery,
@@ -341,4 +397,6 @@ export const {
   useUpdateArticleMutation,
   useDeleteArticleMutation,
   useGetArticleBySlugQuery,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
 } = injectedRtkApi;
