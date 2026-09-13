@@ -4,4 +4,5 @@ export const TAGS = {
   CATEGORIES: "CATEGORIES",
   USERS: "USERS",
   AUTH: "AUTH",
+  SUBSCRIBERS: "SUBSCRIBERS",
 } as const;

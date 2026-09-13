@@ -159,6 +159,23 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.createSubscriberInput,
       }),
     }),
+    listSubscribers: build.query<
+      ListSubscribersApiResponse,
+      ListSubscribersApiArg
+    >({
+      query: () => ({ url: `/subscribers` }),
+      providesTags: ["SUBSCRIBERS"],
+    }),
+    deleteSubscriber: build.mutation<
+      DeleteSubscriberApiResponse,
+      DeleteSubscriberApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/subscribers/${queryArg.id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SUBSCRIBERS"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -251,6 +268,13 @@ export type CreateSubscriberApiResponse =
   /** status 201 Subscribed */ SubscribeResponse;
 export type CreateSubscriberApiArg = {
   createSubscriberInput: CreateSubscriberInput;
+};
+export type ListSubscribersApiResponse =
+  /** status 200 All newsletter subscribers */ Subscriber[];
+export type ListSubscribersApiArg = void;
+export type DeleteSubscriberApiResponse = unknown;
+export type DeleteSubscriberApiArg = {
+  id: string;
 };
 export type User = {
   id: string;
@@ -401,6 +425,11 @@ export type SubscribeResponse = {
 export type CreateSubscriberInput = {
   email: string;
 };
+export type Subscriber = {
+  id: string;
+  email: string;
+  created_at: string;
+};
 export const {
   useLoginMutation,
   useGetCurrentUserQuery,
@@ -421,4 +450,6 @@ export const {
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
   useCreateSubscriberMutation,
+  useListSubscribersQuery,
+  useDeleteSubscriberMutation,
 } = injectedRtkApi;

@@ -39,6 +39,8 @@ const config: ConfigFile = {
     { pattern: "updateUser", invalidatesTags: [TAGS.USERS] },
     { pattern: "deleteUser", invalidatesTags: [TAGS.USERS] },
     { pattern: "getCurrentUser", providesTags: [TAGS.AUTH] },
+    { pattern: "listSubscribers", providesTags: [TAGS.SUBSCRIBERS] },
+    { pattern: "deleteSubscriber", invalidatesTags: [TAGS.SUBSCRIBERS] },
   ],
 };
 
