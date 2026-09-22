@@ -196,10 +196,6 @@
           "video_url": {
             "type": "string",
             "nullable": true
-          },
-          "byline": {
-            "type": "string",
-            "nullable": true
           }
         },
         "required": [
@@ -295,10 +291,6 @@
             "items": {
               "$ref": "#/components/schemas/MediaItem"
             }
-          },
-          "byline": {
-            "type": "string",
-            "nullable": true
           }
         },
         "required": [
@@ -366,9 +358,6 @@
             "items": {
               "$ref": "#/components/schemas/MediaInput"
             }
-          },
-          "byline": {
-            "type": "string"
           }
         },
         "required": [
@@ -431,9 +420,6 @@
             "items": {
               "$ref": "#/components/schemas/MediaInput"
             }
-          },
-          "byline": {
-            "type": "string"
           }
         }
       },

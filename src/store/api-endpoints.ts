@@ -344,7 +344,6 @@ export type ArticleListItem = {
   category_name?: string | null;
   category_slug?: string | null;
   video_url?: string | null;
-  byline?: string | null;
 };
 export type MediaItem = {
   id: string;
@@ -373,7 +372,6 @@ export type ArticleDetail = {
   category_name?: string | null;
   category_slug?: string | null;
   media: MediaItem[];
-  byline?: string | null;
 };
 export type MediaInput = {
   type: "image" | "video";
@@ -394,7 +392,6 @@ export type CreateArticleInput = {
   published_at?: string;
   author_id?: string;
   media?: MediaInput[];
-  byline?: string;
 };
 export type ArticleStats = {
   total: number;
@@ -434,7 +431,6 @@ export type UpdateArticleInput = {
   published_at?: string;
   author_id?: string;
   media?: MediaInput[];
-  byline?: string;
 };
 export type UpdateCategoryInput = {
   name?: string;

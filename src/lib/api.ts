@@ -30,7 +30,7 @@ function mapArticle(raw: ArticleListItem | ArticleDetail): Article {
     excerpt: raw.excerpt ?? "",
     content: "content" in raw ? raw.content : "",
     featuredImageUrl: raw.featured_image_url ?? "",
-    authorName: raw.byline || raw.author_name,
+    authorName: raw.author_name,
     categorySlug: raw.category_slug ?? "",
     categoryName: raw.category_name ?? undefined,
     publishedAt: raw.published_at ?? "",

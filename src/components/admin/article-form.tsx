@@ -46,7 +46,6 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
   const [slug, setSlug] = useState(article?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(isEdit);
   const [excerpt, setExcerpt] = useState(article?.excerpt ?? "");
-  const [byline, setByline] = useState(article?.byline ?? "");
   const [content, setContent] = useState(article?.content ?? "");
   const [featuredImageUrl, setFeaturedImageUrl] = useState(article?.featured_image_url ?? "");
   const [categoryId, setCategoryId] = useState(article?.category_id ?? "");
@@ -108,7 +107,6 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
       title: title.trim(),
       slug: finalSlug,
       excerpt: excerpt.trim(),
-      byline: byline.trim(),
       content,
       category_id: categoryId,
       featured_image_url: featuredImageUrl.trim() || undefined,
@@ -139,7 +137,7 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
     excerpt,
     content,
     featuredImageUrl,
-    authorName: byline.trim() || currentUser?.name || "",
+    authorName: currentUser?.name ?? "",
     categorySlug: selectedCategory?.slug ?? "",
     categoryName: selectedCategory?.name,
     publishedAt: publishedAt ? new Date(publishedAt).toISOString() : new Date().toISOString(),
@@ -183,15 +181,6 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
             value={excerpt}
             onChange={(event) => setExcerpt(event.target.value)}
             rows={2}
-            className={INPUT_CLASS}
-          />
-        </Field>
-
-        <Field label="Byline">
-          <input
-            value={byline}
-            onChange={(event) => setByline(event.target.value)}
-            placeholder={currentUser?.name ? `Defaults to "${currentUser.name}" if left blank` : "Reporter or contributor name"}
             className={INPUT_CLASS}
           />
         </Field>
