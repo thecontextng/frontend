@@ -31,11 +31,63 @@ function ROLE_STYLE(role: string) {
       : "bg-muted/10 text-muted";
 }
 
+function EditableRow({ user, onCancel }: { user: User; onCancel: () => void }) {
+  const [name, setName] = useState(user.name);
+  const [role, setRole] = useState(user.role);
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSave() {
+    setError(null);
+    try {
+      await updateUser({
+        id: user.id,
+        updateUserInput: { name, role: role as User["role"] },
+      }).unwrap();
+      onCancel();
+    } catch {
+      setError("Something went wrong updating this user. Please try again.");
+    }
+  }
+
+  return (
+    <tr className="border-b border-border last:border-b-0">
+      <td className="px-4 py-3">
+        <input value={name} onChange={(e) => setName(e.target.value)} className={INPUT_CLASS} />
+        {error ? <p className="mt-1 text-xs text-red-500">{error}</p> : null}
+      </td>
+      <td className="px-4 py-3 text-muted">{user.email}</td>
+      <td className="px-4 py-3">
+        <Select value={role} onValueChange={(value) => setRole(value as User["role"])} options={ROLE_OPTIONS} />
+      </td>
+      <td className="px-4 py-3 text-muted">{formatDate(user.created_at)}</td>
+      <td className="px-4 py-3 text-right">
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isLoading}
+            className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-background"
+          >
+            Cancel
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function AdminUsersPage() {
   const { data: currentUser } = useGetCurrentUserQuery();
   const { data: users, isLoading } = useListUsersQuery();
   const [createUser, { isLoading: isCreating }] = useCreateUserMutation();
-  const [updateUser] = useUpdateUserMutation();
   const [resetUserPassword] = useResetUserPasswordMutation();
   const [deleteUser] = useDeleteUserMutation();
 
@@ -44,6 +96,7 @@ export default function AdminUsersPage() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("author");
   const [createError, setCreateError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -59,10 +112,6 @@ export default function AdminUsersPage() {
     } catch {
       setCreateError("Something went wrong creating this account. Please try again.");
     }
-  }
-
-  function handleRoleChange(user: User, newRole: string) {
-    updateUser({ id: user.id, updateUserInput: { role: newRole as User["role"] } });
   }
 
   function handleResetPassword(user: User) {
@@ -155,45 +204,44 @@ export default function AdminUsersPage() {
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
-                <tr key={user.id} className="border-b border-border last:border-b-0">
-                  <td className="px-4 py-3 font-medium text-foreground">{user.name}</td>
-                  <td className="px-4 py-3 text-muted">{user.email}</td>
-                  <td className="px-4 py-3">
-                    <span className={`tag-text rounded-full px-2.5 py-1 ${ROLE_STYLE(user.role)}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-muted">{formatDate(user.created_at)}</td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex justify-end">
-                      <RowActionsMenu
-                        actions={[
-                          ...ROLE_OPTIONS.filter((option) => option.value !== user.role).map(
-                            (option) => ({
-                              label: `Make ${option.label}`,
-                              onSelect: () => handleRoleChange(user, option.value),
-                            })
-                          ),
-                          {
-                            label: "Reset password",
-                            onSelect: () => handleResetPassword(user),
-                          },
-                          ...(user.id === currentUser?.id
-                            ? []
-                            : [
-                                {
-                                  label: "Delete",
-                                  variant: "danger" as const,
-                                  onSelect: () => handleDelete(user),
-                                },
-                              ]),
-                        ]}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))
+              users.map((user) =>
+                editingId === user.id ? (
+                  <EditableRow key={user.id} user={user} onCancel={() => setEditingId(null)} />
+                ) : (
+                  <tr key={user.id} className="border-b border-border last:border-b-0">
+                    <td className="px-4 py-3 font-medium text-foreground">{user.name}</td>
+                    <td className="px-4 py-3 text-muted">{user.email}</td>
+                    <td className="px-4 py-3">
+                      <span className={`tag-text rounded-full px-2.5 py-1 ${ROLE_STYLE(user.role)}`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-muted">{formatDate(user.created_at)}</td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end">
+                        <RowActionsMenu
+                          actions={[
+                            { label: "Edit", onSelect: () => setEditingId(user.id) },
+                            {
+                              label: "Reset password",
+                              onSelect: () => handleResetPassword(user),
+                            },
+                            ...(user.id === currentUser?.id
+                              ? []
+                              : [
+                                  {
+                                    label: "Delete",
+                                    variant: "danger" as const,
+                                    onSelect: () => handleDelete(user),
+                                  },
+                                ]),
+                          ]}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )
             )}
           </tbody>
         </table>
