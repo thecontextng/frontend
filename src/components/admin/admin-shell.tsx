@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/admin/articles/new", label: "New Article" },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/subscribers", label: "Subscribers" },
+  { href: "/admin/users", label: "Users" },
 ];
 
 const NAV_CLASS =

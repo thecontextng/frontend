@@ -176,6 +176,17 @@ const injectedRtkApi = api.injectEndpoints({
       }),
       invalidatesTags: ["SUBSCRIBERS"],
     }),
+    resetUserPassword: build.mutation<
+      ResetUserPasswordApiResponse,
+      ResetUserPasswordApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/users/${queryArg.id}/reset-password`,
+        method: "POST",
+        body: queryArg.resetPasswordInput,
+      }),
+      invalidatesTags: ["USERS"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -276,6 +287,12 @@ export type DeleteSubscriberApiResponse = unknown;
 export type DeleteSubscriberApiArg = {
   id: string;
 };
+export type ResetUserPasswordApiResponse =
+  /** status 200 Password reset */ User;
+export type ResetUserPasswordApiArg = {
+  id: string;
+  resetPasswordInput: ResetPasswordInput;
+};
 export type User = {
   id: string;
   email: string;
@@ -327,6 +344,7 @@ export type ArticleListItem = {
   category_name?: string | null;
   category_slug?: string | null;
   video_url?: string | null;
+  byline?: string | null;
 };
 export type MediaItem = {
   id: string;
@@ -355,6 +373,7 @@ export type ArticleDetail = {
   category_name?: string | null;
   category_slug?: string | null;
   media: MediaItem[];
+  byline?: string | null;
 };
 export type MediaInput = {
   type: "image" | "video";
@@ -375,6 +394,7 @@ export type CreateArticleInput = {
   published_at?: string;
   author_id?: string;
   media?: MediaInput[];
+  byline?: string;
 };
 export type ArticleStats = {
   total: number;
@@ -414,6 +434,7 @@ export type UpdateArticleInput = {
   published_at?: string;
   author_id?: string;
   media?: MediaInput[];
+  byline?: string;
 };
 export type UpdateCategoryInput = {
   name?: string;
@@ -429,6 +450,9 @@ export type Subscriber = {
   id: string;
   email: string;
   created_at: string;
+};
+export type ResetPasswordInput = {
+  password: string;
 };
 export const {
   useLoginMutation,
@@ -452,4 +476,5 @@ export const {
   useCreateSubscriberMutation,
   useListSubscribersQuery,
   useDeleteSubscriberMutation,
+  useResetUserPasswordMutation,
 } = injectedRtkApi;

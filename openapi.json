@@ -196,6 +196,10 @@
           "video_url": {
             "type": "string",
             "nullable": true
+          },
+          "byline": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -291,6 +295,10 @@
             "items": {
               "$ref": "#/components/schemas/MediaItem"
             }
+          },
+          "byline": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -358,6 +366,9 @@
             "items": {
               "$ref": "#/components/schemas/MediaInput"
             }
+          },
+          "byline": {
+            "type": "string"
           }
         },
         "required": [
@@ -420,6 +431,9 @@
             "items": {
               "$ref": "#/components/schemas/MediaInput"
             }
+          },
+          "byline": {
+            "type": "string"
           }
         }
       },
@@ -685,6 +699,17 @@
           "id",
           "email",
           "created_at"
+        ]
+      },
+      "ResetPasswordInput": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password"
         ]
       }
     }
@@ -1397,6 +1422,58 @@
         "responses": {
           "204": {
             "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/reset-password": {
+      "post": {
+        "operationId": "resetUserPassword",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
           },
           "404": {
             "description": "Not found",
