@@ -54,6 +54,7 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
   );
   const [status, setStatus] = useState<StatusValue>(article?.status ?? "draft");
   const [tags, setTags] = useState<string[]>(article?.tags ?? []);
+  const [byline, setByline] = useState(article?.byline ?? "");
   const [media, setMedia] = useState<FrontendMediaItem[]>(
     article?.media.map(({ id, type, url, caption }) => ({
       id,
@@ -111,6 +112,7 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
       category_id: categoryId,
       featured_image_url: featuredImageUrl.trim() || undefined,
       tags,
+      byline: byline.trim(),
       status,
       published_at: publishedAt ? new Date(publishedAt).toISOString() : undefined,
       media: media
@@ -137,7 +139,7 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
     excerpt,
     content,
     featuredImageUrl,
-    authorName: currentUser?.name ?? "",
+    authorName: byline.trim() || (currentUser?.name ?? ""),
     categorySlug: selectedCategory?.slug ?? "",
     categoryName: selectedCategory?.name,
     publishedAt: publishedAt ? new Date(publishedAt).toISOString() : new Date().toISOString(),
@@ -213,9 +215,16 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
           </Field>
 
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-semibold text-foreground">Author</span>
-            <p className="rounded-md border border-border bg-card px-3 py-2 text-sm text-muted">
-              Publishing as{" "}
+            <Field label="Byline">
+              <input
+                value={byline}
+                onChange={(event) => setByline(event.target.value)}
+                className={INPUT_CLASS}
+                placeholder={currentUser?.name ?? "Reporter name"}
+              />
+            </Field>
+            <p className="text-xs text-muted">
+              Leave empty to publish as{" "}
               <span className="font-medium text-foreground">{currentUser?.name ?? "…"}</span>
             </p>
           </div>
