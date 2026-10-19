@@ -365,6 +365,7 @@ export type ArticleDetail = {
   status?: "draft" | "published" | "archived";
   published_at?: string | null;
   author_id?: string;
+  byline?: string | null;
   category_id?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -391,6 +392,8 @@ export type CreateArticleInput = {
   status?: "draft" | "published" | "archived";
   published_at?: string;
   author_id?: string;
+  /** Free-text credit shown as the author name instead of the account holder's name. An empty string clears it. */
+  byline?: string;
   media?: MediaInput[];
 };
 export type ArticleStats = {
@@ -430,6 +433,8 @@ export type UpdateArticleInput = {
   status?: "draft" | "published" | "archived";
   published_at?: string;
   author_id?: string;
+  /** Free-text credit shown as the author name instead of the account holder's name. An empty string clears it. */
+  byline?: string;
   media?: MediaInput[];
 };
 export type UpdateCategoryInput = {
