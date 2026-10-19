@@ -262,6 +262,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "byline": {
+            "type": "string",
+            "nullable": true
+          },
           "category_id": {
             "type": "string",
             "format": "uuid",
@@ -353,6 +357,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "byline": {
+            "type": "string",
+            "description": "Free-text credit shown as the author name instead of the account holder's name. An empty string clears it."
+          },
           "media": {
             "type": "array",
             "items": {
@@ -414,6 +422,10 @@
           "author_id": {
             "type": "string",
             "format": "uuid"
+          },
+          "byline": {
+            "type": "string",
+            "description": "Free-text credit shown as the author name instead of the account holder's name. An empty string clears it."
           },
           "media": {
             "type": "array",
