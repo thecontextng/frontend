@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Select } from "@/components/admin/select";
@@ -48,7 +48,7 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
   const [excerpt, setExcerpt] = useState(article?.excerpt ?? "");
   const [content, setContent] = useState(article?.content ?? "");
   const [featuredImageUrl, setFeaturedImageUrl] = useState(article?.featured_image_url ?? "");
-  const [categoryId, setCategoryId] = useState(article?.category_id ?? "");
+  const [pickedCategoryId, setCategoryId] = useState(article?.category_id ?? "");
   const [publishedAt, setPublishedAt] = useState(
     article?.published_at ? article.published_at.slice(0, 10) : new Date().toISOString().slice(0, 10)
   );
@@ -65,12 +65,8 @@ export function ArticleForm({ article }: { article?: ArticleDetail }) {
   );
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!categoryId && categories && categories.length > 0) {
-      setCategoryId(categories[0].id);
-    }
-  }, [categories, categoryId]);
-
+  // Default to the first category until the user picks one.
+  const categoryId = pickedCategoryId || categories?.[0]?.id || "";
   const categoryOptions = (categories ?? []).map((category) => ({
     value: category.id,
     label: category.name,

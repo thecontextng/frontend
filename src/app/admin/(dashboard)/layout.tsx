@@ -1,17 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { useGetCurrentUserQuery } from "@/store/api-endpoints";
 
+const subscribeNoop = () => () => {};
+// null on the server, so the first client render matches before reading the token.
+const readHasToken = () => Boolean(window.localStorage.getItem("auth_token"));
+const serverHasToken = () => null;
+
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [hasToken, setHasToken] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setHasToken(Boolean(window.localStorage.getItem("auth_token")));
-  }, []);
+  const hasToken = useSyncExternalStore<boolean | null>(subscribeNoop, readHasToken, serverHasToken);
 
   const { isError, isFetching } = useGetCurrentUserQuery(undefined, { skip: !hasToken });
 
