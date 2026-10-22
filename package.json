@@ -10,7 +10,7 @@
     "generate-api": "npx @rtk-query/codegen-openapi openapi-config.ts",
     "typecheck": "tsc --noEmit",
     "check:suspicious": "node scripts/check-suspicious.cjs",
-    "ci:check": "npm run typecheck && npm run check:suspicious",
+    "ci:check": "npm run typecheck && npm run lint && npm run check:suspicious",
     "prepare": "husky"
   },
   "dependencies": {

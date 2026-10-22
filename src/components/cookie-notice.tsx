@@ -1,24 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "cookie_notice_dismissed";
 
-export function CookieNotice() {
-  const [visible, setVisible] = useState(false);
+const subscribeNoop = () => () => {};
+const serverDismissed = () => true;
 
-  useEffect(() => {
-    try {
-      if (!window.localStorage.getItem(STORAGE_KEY)) {
-        setVisible(true);
-      }
-    } catch {
-      // localStorage unavailable — skip the notice rather than block the page.
-    }
-  }, []);
+function readDismissed() {
+  try {
+    return Boolean(window.localStorage.getItem(STORAGE_KEY));
+  } catch {
+    // localStorage unavailable — skip the notice rather than block the page.
+    return true;
+  }
+}
+
+export function CookieNotice() {
+  const storedDismissed = useSyncExternalStore(subscribeNoop, readDismissed, serverDismissed);
+  const [dismissedNow, setDismissedNow] = useState(false);
+  const visible = !storedDismissed && !dismissedNow;
 
   function dismiss() {
-    setVisible(false);
+    setDismissedNow(true);
     try {
       window.localStorage.setItem(STORAGE_KEY, "1");
     } catch {

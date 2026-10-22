@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// The theme lives on <html> (set by the theme-init script), so watch its class.
+function subscribeToTheme(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  return () => observer.disconnect();
+}
+const readTheme = () => (document.documentElement.classList.contains("dark") ? "dark" : "light");
+const serverTheme = () => "light" as const;
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
-    setTheme(isDark ? "dark" : "light");
-  }, []);
+  const theme = useSyncExternalStore(subscribeToTheme, readTheme, serverTheme);
 
   function toggle() {
     const next = theme === "dark" ? "light" : "dark";
@@ -16,7 +20,6 @@ export function ThemeToggle() {
     document.documentElement.classList.add(next);
     document.documentElement.style.colorScheme = next;
     localStorage.setItem("theme", next);
-    setTheme(next);
   }
 
   return (
